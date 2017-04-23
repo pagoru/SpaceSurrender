@@ -12,7 +12,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import es.pagoru.spacesurrender.entities.Batman;
+import es.pagoru.spacesurrender.entities.Money;
 
 /**
  * Created by Pablo on 22/04/17.
@@ -20,6 +24,7 @@ import es.pagoru.spacesurrender.entities.Batman;
 
 public class SpaceSurrender extends ApplicationAdapter implements InputProcessor {
 
+	public static final boolean DEBUG_MODE = true;
 	public static final float PIXELS_TO_METERS = 100f;
 
 	public static World world;
@@ -31,6 +36,7 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 	private BitmapFont font;
 
 	private Batman batman;
+	private List<Money> moneyList;
 
 	@Override
 	public void create() {
@@ -41,6 +47,10 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 
 		batman = new Batman();
 
+		Money.m_load();
+		moneyList = new ArrayList<Money>();
+		moneyList.add(new Money());
+
 		Gdx.input.setInputProcessor(this);
 
 		debugRenderer = new Box2DDebugRenderer();
@@ -49,7 +59,16 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 		camera = new OrthographicCamera(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
 	}
 
-	private float elapsed = 0;
+	private void BatmanLimits(){
+
+		BodyDef bodyDef_top = new BodyDef();
+		bodyDef_top.type = BodyDef.BodyType.KinematicBody;
+		bodyDef_top.position.set( 20 / SpaceSurrender.PIXELS_TO_METERS, 20 / SpaceSurrender.PIXELS_TO_METERS);
+
+		Body body_top = SpaceSurrender.world.createBody(bodyDef_top);
+
+	}
+
 	@Override
 	public void render() {
 		camera.update();
@@ -65,19 +84,25 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 		batch.begin();
 
 		batman.render(batch);
+		for (Money money : moneyList) {
+			//System.out.println(money.getSprite().getX());
+			money.render(batch);
+		}
 
 		font.draw(batch,
-				"I'm batman",
-				-Gdx.graphics.getWidth()/4/2,
-				Gdx.graphics.getHeight()/4/2 );
+				"I'm batman, I'm " + batman.getMoney() +"$ rich!!!",
+				-Gdx.graphics.getWidth()/4/2 + 10,
+				Gdx.graphics.getHeight()/4/2 - 10);
 		batch.end();
 
-		debugRenderer.render(world, debugMatrix);
+		if(DEBUG_MODE)
+			debugRenderer.render(world, debugMatrix);
 	}
 
 	@Override
 	public void dispose() {
 		batman.dispose();
+		Money.m_dispose();
 		world.dispose();
 	}
 
