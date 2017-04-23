@@ -55,7 +55,7 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 
 		debugRenderer = new Box2DDebugRenderer();
 		font = new BitmapFont();
-		font.setColor(Color.BLACK);
+		font.setColor(new Color(128f/256f, 128f/256f, 128f/256f, 1));
 		camera = new OrthographicCamera(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/4);
 
 	}
@@ -66,7 +66,7 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 
 		world.step(1f/60f, 6, 2);
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.gl.glClearColor(11f/256f, 11f/256f, 10f/256f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(camera.combined);
