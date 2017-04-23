@@ -2,89 +2,134 @@ package es.pagoru.spacesurrender;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 
-public class SpaceSurrender extends ApplicationAdapter {
+import es.pagoru.spacesurrender.entities.Batman;
 
-	private OrthographicCamera cam;
+/**
+ * Created by Pablo on 22/04/17.
+ */
+
+public class SpaceSurrender extends ApplicationAdapter implements InputProcessor {
+
+	public static final float PIXELS_TO_METERS = 100f;
+
+	public static World world;
 
 	private SpriteBatch batch;
+	private Box2DDebugRenderer debugRenderer;
+	private Matrix4 debugMatrix;
+	private OrthographicCamera camera;
+	private BitmapFont font;
 
-	private Texture batmanTexture;
-	private Texture batmanLogoTexture;
-	private Texture hitheartKappa;
-
-	private int playerPosition = 0;
-
-	private int[] graphics_size = new int[2];
+	private Batman batman;
 
 	@Override
-	public void create () {
+	public void create() {
+
 		batch = new SpriteBatch();
-		batmanTexture = new Texture("batman.png");
-		batmanLogoTexture = new Texture("batman_logo.png");
-		hitheartKappa = new Texture("Kappa.png");
 
-		graphics_size[0] = Gdx.graphics.getWidth();
-		graphics_size[1] = Gdx.graphics.getHeight();
+		world = new World(new Vector2(-10f, 0),true);
 
-		// Constructs a new OrthographicCamera, using the given viewport width and height
-		// Height is multiplied by aspect ratio.
-		cam = new OrthographicCamera(graphics_size[0]/4, graphics_size[1]/4);
+		batman = new Batman();
 
-		cam.position.set(0, 0, 0);
-		cam.update();
+		Gdx.input.setInputProcessor(this);
 
+		debugRenderer = new Box2DDebugRenderer();
+		font = new BitmapFont();
+		font.setColor(Color.BLACK);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
 	}
 
+	private float elapsed = 0;
 	@Override
-	public void render () {
-		handleInput();
+	public void render() {
+		camera.update();
 
-		cam.update();
-		batch.setProjectionMatrix(cam.combined);
+		world.step(1f/60f, 6, 2);
 
-		Gdx.gl.glClearColor(34f/256f, 34f/256f, 34f/256f, 1);
+		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		batch.setProjectionMatrix(camera.combined);
+		debugMatrix = batch.getProjectionMatrix().cpy().scale(PIXELS_TO_METERS,
+				PIXELS_TO_METERS, 0);
 		batch.begin();
-		batch.draw(batmanTexture, -(graphics_size[1]/4 - 48), -32 + playerPosition);
 
-		batch.draw(batmanLogoTexture, 128, 64);
-		batch.draw(batmanLogoTexture, 20, -54);
-		batch.draw(batmanLogoTexture, -124, 56);
-		batch.draw(batmanLogoTexture, -154, -96);
+		batman.render(batch);
 
-		batch.draw(hitheartKappa, 0, 0);
+		font.draw(batch,
+				"I'm batman",
+				-Gdx.graphics.getWidth()/4/2,
+				Gdx.graphics.getHeight()/4/2 );
 		batch.end();
-	}
 
-	public void handleInput(){
-		int maxPlayerPosition = 88;
-		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-			if(playerPosition < maxPlayerPosition){
-				playerPosition ++;
-			}
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			if(playerPosition > -maxPlayerPosition){
-				playerPosition --;
-			}
-		}
+		debugRenderer.render(world, debugMatrix);
 	}
 
 	@Override
-	public void dispose () {
-		batch.dispose();
-		batmanTexture.dispose();
+	public void dispose() {
+		batman.dispose();
+		world.dispose();
 	}
 
-	public static int randomInt(int Min, int Max)
-	{
-		return (int) (Math.random()*(Max-Min))+Min;
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if(screenY < 1080/2){
+			batman.setLinearVelocity(new Vector2(0, 0.75f));
+			return true;
+		}
+		batman.setLinearVelocity(new Vector2(0, -0.75f));
+		return true;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
+		batman.setLinearVelocity(new Vector2());
+		return true;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		if(screenY < 1080/2){
+			batman.setLinearVelocity(new Vector2(0, 0.75f));
+			return true;
+		}
+		batman.setLinearVelocity(new Vector2(0, -0.75f));
+		return true;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
 	}
 }
