@@ -35,7 +35,7 @@ public class Batman extends Entity {
         body = SpaceSurrender.world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth()/5 / SpaceSurrender.PIXELS_TO_METERS, sprite.getHeight()
+        shape.setAsBox(sprite.getWidth()/4 / SpaceSurrender.PIXELS_TO_METERS, sprite.getHeight()
                 /2 / SpaceSurrender.PIXELS_TO_METERS);
 
         FixtureDef fixtureDef = new FixtureDef();
@@ -59,12 +59,30 @@ public class Batman extends Entity {
         this.money += money;
     }
 
+    private boolean overflow = false;
+
     @Override
     public void render(SpriteBatch batch){
+
+        if(overflow){
+            setLinearVelocity(new Vector2());
+            overflow = false;
+        }
+        if(body.getPosition().y > 1.0f - (16 / SpaceSurrender.PIXELS_TO_METERS)){
+            setLinearVelocity(new Vector2(0, -2f));
+            overflow = true;
+        }
+        if(body.getPosition().y < - 1.0f + (16 / SpaceSurrender.PIXELS_TO_METERS)){
+            setLinearVelocity(new Vector2(0, 2f));
+            overflow = true;
+        }
+
+        //if(((Gdx.graphics.getWidth()/4/2) / SpaceSurrender.PIXELS_TO_METERS))
+
         body.applyTorque(0.0f,true);
 
         sprite.setPosition((body.getPosition().x * SpaceSurrender.PIXELS_TO_METERS) - sprite.getWidth()/2 ,
-                (body.getPosition().y * SpaceSurrender.PIXELS_TO_METERS) -sprite.getHeight()/2 );
+                (body.getPosition().y * SpaceSurrender.PIXELS_TO_METERS) - sprite.getHeight()/2 );
         sprite.setRotation((float)Math.toDegrees(body.getAngle()));
 
         batch.draw(sprite, sprite.getX(), sprite.getY(),sprite.getOriginX(),

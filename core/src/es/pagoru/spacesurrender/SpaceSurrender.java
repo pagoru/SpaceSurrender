@@ -56,16 +56,7 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 		debugRenderer = new Box2DDebugRenderer();
 		font = new BitmapFont();
 		font.setColor(Color.BLACK);
-		camera = new OrthographicCamera(Gdx.graphics.getWidth()/4,Gdx.graphics.getHeight()/4);
-	}
-
-	private void BatmanLimits(){
-
-		BodyDef bodyDef_top = new BodyDef();
-		bodyDef_top.type = BodyDef.BodyType.KinematicBody;
-		bodyDef_top.position.set( 20 / SpaceSurrender.PIXELS_TO_METERS, 20 / SpaceSurrender.PIXELS_TO_METERS);
-
-		Body body_top = SpaceSurrender.world.createBody(bodyDef_top);
+		camera = new OrthographicCamera(Gdx.graphics.getWidth()/4, Gdx.graphics.getHeight()/4);
 
 	}
 
@@ -121,13 +112,17 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 		return false;
 	}
 
+	private void moveBatman(int screenY){
+		if(screenY < 1080/2){
+			batman.setLinearVelocity(new Vector2(0, 1f));
+			return;
+		}
+		batman.setLinearVelocity(new Vector2(0, -1f));
+	}
+
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		if(screenY < 1080/2){
-			batman.setLinearVelocity(new Vector2(0, 0.75f));
-			return true;
-		}
-		batman.setLinearVelocity(new Vector2(0, -0.75f));
+		moveBatman(screenY);
 		return true;
 	}
 
@@ -140,11 +135,7 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		if(screenY < 1080/2){
-			batman.setLinearVelocity(new Vector2(0, 0.75f));
-			return true;
-		}
-		batman.setLinearVelocity(new Vector2(0, -0.75f));
+		moveBatman(screenY);
 		return true;
 	}
 
