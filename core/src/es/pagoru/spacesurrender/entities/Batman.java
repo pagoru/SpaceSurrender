@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
@@ -35,12 +36,12 @@ public class Batman extends Entity {
         body = SpaceSurrender.world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth()/4 / SpaceSurrender.PIXELS_TO_METERS, sprite.getHeight()
-                /2 / SpaceSurrender.PIXELS_TO_METERS);
+        shape.setAsBox(sprite.getWidth()/6 / SpaceSurrender.PIXELS_TO_METERS, sprite.getHeight()
+                /3 / SpaceSurrender.PIXELS_TO_METERS);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 0.1f;
+        fixtureDef.density = 10f;
         fixtureDef.restitution = 0.5f;
 
         body.createFixture(fixtureDef);
@@ -79,7 +80,7 @@ public class Batman extends Entity {
 
         //if(((Gdx.graphics.getWidth()/4/2) / SpaceSurrender.PIXELS_TO_METERS))
 
-        body.applyTorque(0.0f,true);
+        body.applyTorque(0.0f, true);
 
         sprite.setPosition((body.getPosition().x * SpaceSurrender.PIXELS_TO_METERS) - sprite.getWidth()/2 ,
                 (body.getPosition().y * SpaceSurrender.PIXELS_TO_METERS) - sprite.getHeight()/2 );

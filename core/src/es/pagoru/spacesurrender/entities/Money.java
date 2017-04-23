@@ -1,5 +1,6 @@
 package es.pagoru.spacesurrender.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,7 +27,7 @@ public class Money extends Entity {
     public Money(){
         sprite = new Sprite(m_texture);
 
-        sprite.setPosition(-sprite.getWidth()/2,-sprite.getHeight()/2);
+        sprite.setPosition(Gdx.graphics.getWidth()/4/2,-sprite.getHeight()/2);
 
         bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;

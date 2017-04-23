@@ -24,10 +24,11 @@ import es.pagoru.spacesurrender.entities.Money;
 
 public class SpaceSurrender extends ApplicationAdapter implements InputProcessor {
 
-	public static final boolean DEBUG_MODE = true;
+	public static final boolean DEBUG_MODE = false;
 	public static final float PIXELS_TO_METERS = 100f;
 
 	public static World world;
+	public static Batman batman;
 
 	private SpriteBatch batch;
 	private Box2DDebugRenderer debugRenderer;
@@ -35,7 +36,6 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 	private OrthographicCamera camera;
 	private BitmapFont font;
 
-	private Batman batman;
 	private List<Money> moneyList;
 
 	@Override
@@ -43,8 +43,8 @@ public class SpaceSurrender extends ApplicationAdapter implements InputProcessor
 
 		batch = new SpriteBatch();
 
-		world = new World(new Vector2(-10f, 0),true);
-
+		world = new World(new Vector2(-1f, 0),true);
+		world.setContactListener(new ListenerContact());
 		batman = new Batman();
 
 		Money.m_load();
