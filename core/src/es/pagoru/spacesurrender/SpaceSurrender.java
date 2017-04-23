@@ -13,7 +13,10 @@ public class SpaceSurrender extends ApplicationAdapter {
 	private OrthographicCamera cam;
 
 	private SpriteBatch batch;
-	private Texture img;
+
+	private Texture batmanTexture;
+	private Texture batmanLogoTexture;
+	private Texture hitheartKappa;
 
 	private int playerPosition = 0;
 
@@ -22,7 +25,9 @@ public class SpaceSurrender extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		img = new Texture("batman.png");
+		batmanTexture = new Texture("batman.png");
+		batmanLogoTexture = new Texture("batman_logo.png");
+		hitheartKappa = new Texture("Kappa.png");
 
 		graphics_size[0] = Gdx.graphics.getWidth();
 		graphics_size[1] = Gdx.graphics.getHeight();
@@ -43,22 +48,29 @@ public class SpaceSurrender extends ApplicationAdapter {
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
 
-		Gdx.gl.glClearColor(48f/256f, 38f/256f, 57f/256f, 1);
+		Gdx.gl.glClearColor(34f/256f, 34f/256f, 34f/256f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.begin();
-		batch.draw(img, -(graphics_size[1]/4 - 48), -32 + playerPosition);
+		batch.draw(batmanTexture, -(graphics_size[1]/4 - 48), -32 + playerPosition);
+
+		batch.draw(batmanLogoTexture, 128, 64);
+		batch.draw(batmanLogoTexture, 20, -54);
+		batch.draw(batmanLogoTexture, -124, 56);
+		batch.draw(batmanLogoTexture, -154, -96);
+
+		batch.draw(hitheartKappa, 0, 0);
 		batch.end();
 	}
 
 	public void handleInput(){
 		int maxPlayerPosition = 88;
-		if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.UP)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.W)) {
 			if(playerPosition < maxPlayerPosition){
 				playerPosition ++;
 			}
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.S) || Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 			if(playerPosition > -maxPlayerPosition){
 				playerPosition --;
 			}
@@ -68,6 +80,11 @@ public class SpaceSurrender extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		img.dispose();
+		batmanTexture.dispose();
+	}
+
+	public static int randomInt(int Min, int Max)
+	{
+		return (int) (Math.random()*(Max-Min))+Min;
 	}
 }
